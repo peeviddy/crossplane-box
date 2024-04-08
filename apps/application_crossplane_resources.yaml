@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Piotr1215/crossplane-box
+    repoURL: https://github.com/peeviddy/crossplane-box
     path: yaml
     targetRevision: HEAD
   destination:
