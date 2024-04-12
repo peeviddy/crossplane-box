@@ -16,19 +16,7 @@ default:
   just --list --unsorted
 
 # * setup kind cluster with crossplane, ArgoCD and launch argocd in browser
-setup: _replace_repo_user setup_kind setup_crossplane setup_argo launch_argo
-
-# replace repo user
-_replace_repo_user:
-  #!/usr/bin/env bash
-  if grep -qw "Piotr1215" bootstrap.yaml && grep -qw "Piotr1215" {{apps}}/application_crossplane_resources.yaml; then
-    if [[ -z "${GITHUB_USER}" ]]; then
-      echo "Please set GITHUB_USER variable with your user name"
-      exit 1
-    fi
-    {{replace}} "s/Piotr1215/${GITHUB_USER}/g" bootstrap.yaml
-    {{replace}} "s/Piotr1215/${GITHUB_USER}/g" {{apps}}/application_crossplane_resources.yaml
-  fi
+setup: setup_kind setup_crossplane setup_argo launch_argo
 
 # setup kind cluster
 setup_kind cluster_name='control-plane':
@@ -87,7 +75,7 @@ sync:
   #!/usr/bin/env bash
   export argo_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
   yes | argocd login localhost:{{argocd_port}} --username admin --password "${argo_pw}"
-  argocd app sync bootstrap --prune --local ./apps 
+  argocd app sync bootstrap --prune --local ./apps
 
 # * delete KIND cluster
 teardown:
